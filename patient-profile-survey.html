@@ -684,13 +684,54 @@
   });
 
   // Submit
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_-LgX1BZhRhDpnpBA1k4kaJQKkc56RHVOGeyFs-iW9l7V0k8vPbjLgsV3d8POB7YN/exec';
+
   document.getElementById('surveyForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    document.getElementById('surveyForm').style.display = 'none';
-    document.querySelector('.intro-card').style.display = 'none';
-    document.getElementById('thankYou').classList.add('visible');
-    document.getElementById('progressBar').style.width = '100%';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    var form = document.getElementById('surveyForm');
+    var btn = form.querySelector('.submit-btn');
+    btn.textContent = 'Submitting…';
+    btn.disabled = true;
+
+    // Collect checkbox arrays
+    var essential = [...form.querySelectorAll('input[name="q11_essential"]:checked')].map(i => i.value);
+    var least = [...form.querySelectorAll('input[name="q12_least"]:checked')].map(i => i.value);
+
+    var payload = {
+      q1_first_three:       form.q1_first_three.value,
+      q3_prepared:          form.q3_prepared ? (form.q3_prepared.value || '') : '',
+      q4_helpful:           form.q4_helpful.value,
+      q5_unnecessary:       form.q5_unnecessary.value,
+      q6_missing:           form.q6_missing.value,
+      q14_prep_score:       document.getElementById('q14_val').value,
+      q7_outreach:          form.q7_outreach ? (form.q7_outreach.value || '') : '',
+      q8_outreach_why:      form.q8_outreach_why.value,
+      q9_between_useful:    form.q9_between_useful.value,
+      q10_between_missing:  form.q10_between_missing.value,
+      q15_monitoring_score: document.getElementById('q15_val').value,
+      q16_vs_current:       form.q16_vs_current ? ([...form.querySelectorAll('input[name="q16_vs_current"]:checked')].map(i=>i.value)[0] || '') : '',
+      q13_remove:           form.q13_remove.value,
+      q17_top_improvement:  form.q17_top_improvement.value,
+      q19_frequency:        ([...form.querySelectorAll('input[name="q19_frequency"]:checked')].map(i=>i.value)[0] || '')
+    };
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      form.style.display = 'none';
+      document.querySelector('.intro-card').style.display = 'none';
+      document.getElementById('thankYou').classList.add('visible');
+      document.getElementById('progressBar').style.width = '100%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    })
+    .catch(() => {
+      btn.textContent = 'Submit Feedback';
+      btn.disabled = false;
+      alert('Something went wrong. Please try again.');
+    });
   });
 </script>
 </body>
