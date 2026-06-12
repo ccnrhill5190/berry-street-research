@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Patient Profile Feedback — Berry Street</title>
+<style>
+  :root {
+    --berry: #003E32;
+    --berry-hover: #002822;
+    --berry-light: #E6EFED;
+    --berry-mid: #C8DDD9;
+    --green: #059669;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo { font-size: 15px; font-weight: 700; color: var(--berry); }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: var(--gray-200);
+    height: 4px;
+    position: sticky;
+    top: 56px;
+    z-index: 99;
+  }
+  .progress-bar {
+    background: var(--berry);
+    height: 4px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* LAYOUT */
+  .outer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* INTRO */
+  .intro-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .intro-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--berry);
+    background: var(--berry-light);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .intro-card h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--berry);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .intro-card p {
+    font-size: 15px;
+    color: var(--gray-600);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+  .prototype-link-wrap {
+    background: var(--berry-light);
+    border: 1px solid var(--berry-mid);
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .prototype-link-wrap .pill {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    background: var(--berry);
+    color: white;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .prototype-link-wrap a {
+    font-size: 14px;
+    color: var(--berry);
+    font-weight: 600;
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .prototype-link-wrap a:hover { text-decoration: underline; }
+
+  /* SECTION CARDS */
+  .section-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .section-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--berry);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .section-header-text h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--berry);
+    margin-bottom: 4px;
+  }
+  .scenario-box {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+  }
+  .scenario-box .scenario-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 6px;
+  }
+  .scenario-box p {
+    font-size: 14px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+
+  /* QUESTIONS */
+  .question-block {
+    margin-bottom: 28px;
+  }
+  .question-block:last-child { margin-bottom: 0; }
+  .question-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+  .question-hint {
+    font-size: 13px;
+    color: var(--gray-500);
+    margin-bottom: 10px;
+  }
+
+  /* TEXTAREA */
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--gray-900);
+    resize: vertical;
+    min-height: 88px;
+    transition: border-color 0.15s;
+    background: white;
+  }
+  textarea:focus { outline: none; border-color: var(--berry); }
+
+  /* RADIO / CHECKBOX */
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+  .option-item:hover { border-color: var(--berry); background: var(--berry-light); }
+  .option-item input[type="radio"],
+  .option-item input[type="checkbox"] {
+    accent-color: var(--berry);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .option-item.selected {
+    border-color: var(--berry);
+    background: var(--berry-light);
+  }
+  .option-item label {
+    font-size: 14px;
+    color: var(--gray-700);
+    cursor: pointer;
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  /* CHECKBOX GRID (for multi-select) */
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  @media (max-width: 520px) { .checkbox-grid { grid-template-columns: 1fr; } }
+
+  /* STAR SCALE */
+  .scale-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .scale-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .scale-label-text {
+    font-size: 13px;
+    color: var(--gray-700);
+    width: 260px;
+    flex-shrink: 0;
+    line-height: 1.4;
+  }
+  .scale-buttons {
+    display: flex;
+    gap: 6px;
+  }
+  .scale-btn {
+    width: 40px;
+    height: 40px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .scale-btn:hover { border-color: var(--berry); color: var(--berry); background: var(--berry-light); }
+  .scale-btn.active { background: var(--berry); border-color: var(--berry); color: white; }
+  .scale-end-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding: 0 2px;
+  }
+  .scale-end-labels span {
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  @media (max-width: 580px) {
+    .scale-row { flex-direction: column; align-items: flex-start; }
+    .scale-label-text { width: 100%; }
+  }
+
+  /* DIVIDER */
+  .q-divider {
+    border: none;
+    border-top: 1px solid var(--gray-100);
+    margin: 24px 0;
+  }
+
+  /* SUBMIT */
+  .submit-wrap {
+    text-align: center;
+    margin-top: 32px;
+  }
+  .submit-btn {
+    background: var(--berry);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 40px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    letter-spacing: .01em;
+  }
+  .submit-btn:hover { background: var(--berry-hover); }
+  .submit-note {
+    font-size: 13px;
+    color: var(--gray-400);
+    margin-top: 10px;
+  }
+
+  /* THANK YOU */
+  .thankyou {
+    display: none;
+    text-align: center;
+    padding: 64px 32px;
+  }
+  .thankyou.visible { display: block; }
+  .thankyou-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--berry-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 28px;
+  }
+  .thankyou h2 { font-size: 24px; font-weight: 700; color: var(--berry); margin-bottom: 10px; }
+  .thankyou p { font-size: 15px; color: var(--gray-600); line-height: 1.6; }
+
+  /* VALIDATION */
+  .field-error { font-size: 12px; color: #DC2626; margin-top: 5px; display: none; }
+  .question-block.has-error textarea,
+  .question-block.has-error .options-list { border-color: #DC2626; }
+  .question-block.has-error .field-error { display: block; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">Berry Street Research</span>
+</nav>
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="outer" id="surveyOuter">
+
+  <!-- INTRO -->
+  <div class="intro-card">
+    <span class="intro-label">Provider Feedback</span>
+    <h1>Patient Profile Feedback</h1>
+    <p>We're exploring a new patient profile experience designed to help providers prepare for sessions and stay informed between sessions.</p>
+    <p>Please spend a few minutes reviewing the prototype and answering the questions below based on how you would use this in your real workflow.</p>
+    <div class="prototype-link-wrap">
+      <span class="pill">Prototype</span>
+      <a href="https://ccnrhill5190.github.io/berry-street-research/patient-profile.html" target="_blank" rel="noopener">
+        ccnrhill5190.github.io/berry-street-research/patient-profile.html
+      </a>
+    </div>
+  </div>
+
+  <form id="surveyForm" novalidate>
+
+    <!-- PART 1 -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-header-text">
+          <h2>Session Preparation</h2>
+        </div>
+      </div>
+
+      <div class="scenario-box">
+        <div class="scenario-label">Scenario</div>
+        <p>Imagine you have a follow-up appointment with this patient in 5 minutes. Review the profile as if you were preparing for the visit.</p>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">1. What are the first 3 things you looked at on the profile?</div>
+        <textarea name="q1_first_three" rows="3" placeholder="e.g. recent weight trend, latest session recap, active goals…"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">2. Did you find the information you needed to prepare?</div>
+        <div class="options-list" id="q3_list">
+          <label class="option-item">
+            <input type="radio" name="q3_prepared" value="Yes"> <label>Yes</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q3_prepared" value="Mostly"> <label>Mostly</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q3_prepared" value="Somewhat"> <label>Somewhat</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q3_prepared" value="No"> <label>No</label>
+          </label>
+        </div>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">3. What information was most helpful?</div>
+        <textarea name="q4_helpful" rows="3" placeholder="What content helped you prepare most?"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">4. What information felt unnecessary or distracting?</div>
+        <textarea name="q5_unnecessary" rows="3" placeholder="What got in the way or felt low-value for prep?"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">5. What information was missing?</div>
+        <textarea name="q6_missing" rows="3" placeholder="What did you want to see that wasn't there?"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">6. How well would this profile support session preparation?</div>
+        <div class="question-hint">1 = Not at all · 5 = Extremely well</div>
+        <div class="scale-buttons" id="q14_scale">
+          <button type="button" class="scale-btn" data-group="q14" data-val="1">1</button>
+          <button type="button" class="scale-btn" data-group="q14" data-val="2">2</button>
+          <button type="button" class="scale-btn" data-group="q14" data-val="3">3</button>
+          <button type="button" class="scale-btn" data-group="q14" data-val="4">4</button>
+          <button type="button" class="scale-btn" data-group="q14" data-val="5">5</button>
+        </div>
+        <div class="scale-end-labels">
+          <span>Not at all</span>
+          <span>Extremely well</span>
+        </div>
+        <input type="hidden" name="q14_prep_score" id="q14_val">
+      </div>
+    </div>
+
+    <!-- PART 2 -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-header-text">
+          <h2>Between Sessions</h2>
+        </div>
+      </div>
+
+      <div class="scenario-box">
+        <div class="scenario-label">Scenario</div>
+        <p>Imagine you are reviewing this patient between appointments to determine whether they may need outreach or additional support.</p>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">8. Would anything on this profile prompt you to reach out to the patient?</div>
+        <div class="options-list" id="q7_list">
+          <label class="option-item">
+            <input type="radio" name="q7_outreach" value="Yes"> <label>Yes</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q7_outreach" value="No"> <label>No</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q7_outreach" value="Not sure"> <label>Not sure</label>
+          </label>
+        </div>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">9. If yes, what would prompt outreach?</div>
+        <div class="question-hint">Leave blank if you answered "No" above.</div>
+        <textarea name="q8_outreach_why" rows="3" placeholder="e.g. weight stall for 3+ weeks, no journal entries, missed session…"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">10. What information was most useful for understanding how the patient is doing between sessions?</div>
+        <textarea name="q9_between_useful" rows="3" placeholder="What gave you the clearest picture of their progress or struggles?"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">11. What information would you want to see that isn't currently available?</div>
+        <textarea name="q10_between_missing" rows="3" placeholder="What data or signals would help you monitor patients between sessions?"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">12. How well would this profile support monitoring patients between sessions?</div>
+        <div class="question-hint">1 = Not at all · 5 = Extremely well</div>
+        <div class="scale-buttons" id="q15_scale">
+          <button type="button" class="scale-btn" data-group="q15" data-val="1">1</button>
+          <button type="button" class="scale-btn" data-group="q15" data-val="2">2</button>
+          <button type="button" class="scale-btn" data-group="q15" data-val="3">3</button>
+          <button type="button" class="scale-btn" data-group="q15" data-val="4">4</button>
+          <button type="button" class="scale-btn" data-group="q15" data-val="5">5</button>
+        </div>
+        <div class="scale-end-labels">
+          <span>Not at all</span>
+          <span>Extremely well</span>
+        </div>
+        <input type="hidden" name="q15_monitoring_score" id="q15_val">
+      </div>
+    </div>
+
+    <!-- PART 3 -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-header-text">
+          <h2>Content Prioritization</h2>
+        </div>
+      </div>
+
+    <!-- PART 4 -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-header-text">
+          <h2>Overall Feedback</h2>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">13. If we had to remove 25% of the information on this page, what would you remove first?</div>
+        <textarea name="q13_remove" rows="3" placeholder="What's lowest priority?"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">14. Compared to your current workflow, would this make it easier to understand a patient's progress?</div>
+        <div class="options-list" id="q16_list">
+          <label class="option-item">
+            <input type="radio" name="q16_vs_current" value="Much easier"> <label>Much easier</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q16_vs_current" value="Somewhat easier"> <label>Somewhat easier</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q16_vs_current" value="About the same"> <label>About the same</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q16_vs_current" value="Harder"> <label>Harder</label>
+          </label>
+        </div>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">15. What's the single most important improvement we could make?</div>
+        <textarea name="q17_top_improvement" rows="3" placeholder="If you could change one thing, what would it be?"></textarea>
+      </div>
+
+      <hr class="q-divider">
+
+      <div class="question-block">
+        <div class="question-label">16. Imagine this profile existed tomorrow. How often would you realistically use it?</div>
+        <div class="options-list" id="q19_list">
+          <label class="option-item">
+            <input type="radio" name="q19_frequency" value="Before every session"> <label>Before every session</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q19_frequency" value="Before most sessions"> <label>Before most sessions</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q19_frequency" value="Only for complex patients"> <label>Only for complex patients</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q19_frequency" value="Rarely"> <label>Rarely</label>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="q19_frequency" value="Never"> <label>Never</label>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="submit-btn">Submit Feedback</button>
+      <p class="submit-note">Takes about 10 minutes · Your responses help shape what we build next.</p>
+    </div>
+
+  </form>
+
+  <div class="thankyou" id="thankYou">
+    <div class="thankyou-icon">✓</div>
+    <h2>Thank you!</h2>
+    <p>Your feedback helps us build a better patient profile experience.<br>We really appreciate you taking the time.</p>
+  </div>
+
+</div>
+
+<script>
+  // Progress bar
+  function updateProgress() {
+    const form = document.getElementById('surveyForm');
+    const inputs = form.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked, textarea');
+    const textareas = form.querySelectorAll('textarea');
+    const radios = form.querySelectorAll('input[type="radio"]');
+    const radioGroups = new Set([...radios].map(r => r.name));
+    const checkedGroups = new Set([...form.querySelectorAll('input[type="radio"]:checked')].map(r => r.name));
+    const hiddenVals = [...form.querySelectorAll('input[type="hidden"]')].filter(h => h.value !== '');
+    const filledTexts = [...textareas].filter(t => t.value.trim().length > 0);
+
+    const total = radioGroups.size + hiddenVals.length + 2; // rough total
+    const filled = checkedGroups.size + hiddenVals.length + Math.min(filledTexts.length, 2);
+    const pct = Math.min(100, Math.round((filled / 19) * 100));
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  // Option item selection highlight
+  document.querySelectorAll('.option-item input').forEach(input => {
+    input.addEventListener('change', function() {
+      const name = this.name;
+      if (this.type === 'radio') {
+        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+          r.closest('.option-item').classList.toggle('selected', r.checked);
+        });
+      } else {
+        this.closest('.option-item').classList.toggle('selected', this.checked);
+      }
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('textarea').forEach(t => {
+    t.addEventListener('input', updateProgress);
+  });
+
+  // Scale buttons
+  document.querySelectorAll('.scale-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const group = this.dataset.group;
+      document.querySelectorAll(`.scale-btn[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById(group + '_val').value = this.dataset.val;
+      updateProgress();
+    });
+  });
+
+  // Submit
+  document.getElementById('surveyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('surveyForm').style.display = 'none';
+    document.querySelector('.intro-card').style.display = 'none';
+    document.getElementById('thankYou').classList.add('visible');
+    document.getElementById('progressBar').style.width = '100%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
